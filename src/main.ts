@@ -1,17 +1,23 @@
 import { NestFactory } from '@nestjs/core';
+import { INestApplication } from '@nestjs/common';
+import { 
+  DocumentBuilder,
+  SwaggerModule,
+  OpenAPIObject
+} from '@nestjs/swagger';
 import { AppModule } from './app.module';
-import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app: INestApplication = await NestFactory.create(AppModule);
 
-  const config = new DocumentBuilder()
+  const config: any = new DocumentBuilder()
     .setTitle("Blog API")
     .addBearerAuth()
     .build();
-  const document = SwaggerModule.createDocument(app, config);
+  const document: OpenAPIObject = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup("/api/docs", app, document);
 
-  await app.listen(3000);
+  const PORT: string = process.env.PORT;
+  await app.listen(PORT);
 }
 bootstrap();
