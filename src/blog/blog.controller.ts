@@ -4,8 +4,11 @@ import {
     Post,
     Put,
     Delete,
+    Body,
 } from '@nestjs/common';
 import { BlogService } from './blog.service';
+import { PostDto } from './dto/PostDto';
+import { PostDeleteDto } from './dto/PostDeleteDto';
 
 @Controller('blog')
 export class BlogController {
@@ -18,20 +21,20 @@ export class BlogController {
     }
 
     @Post("post/create")
-    async createPost(): Promise<string> 
+    async createPost(@Body() params: PostDto): Promise<string> 
     {
-        return await this.blogService.createPost();
+        return await this.blogService.createPost(params);
     }
 
     @Put("post/edit")
-    async editPost(): Promise<string> 
+    async editPost(@Body() params: PostDto): Promise<string> 
     {
-        return await this.blogService.editPost();
+        return await this.blogService.editPost(params);
     }
 
-    @Delete("post/delete/:id")
-    async deletePost(): Promise<number> 
+    @Delete("post/delete")
+    async deletePost(@Body() params: PostDeleteDto): Promise<any> 
     {
-        return await this.blogService.deletePost();
+        return await this.blogService.deletePost(params);
     }
 }
