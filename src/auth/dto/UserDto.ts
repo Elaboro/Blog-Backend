@@ -1,6 +1,11 @@
 import { IsString, Length } from "class-validator";
+import { ApiProperty } from "@nestjs/swagger";
 
 export class UserDto {
+    @ApiProperty({
+        example: "user",
+        type: String,
+    })
     @IsString({
         message: "Должен быть строкой"
     })
@@ -9,6 +14,10 @@ export class UserDto {
     })
     readonly username: string;
 
+    @ApiProperty({
+        example: "user",
+        type: String,
+    })
     @IsString({
         message: "Должен быть строкой"
     })

@@ -1,48 +1,67 @@
 import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
-import { PostDto } from './dto/PostDto';
+import { PostCreateDto } from './dto/PostCreateDto';
 import { Post } from './entities/Post';
 import { PostDeleteDto } from './dto/PostDeleteDto';
-import { ObjectID, getMongoRepository } from 'typeorm';
+import { PostEditDto } from './dto/PostEditDto';
 
 @Injectable()
 export class BlogService {
-    async getPost(): Promise<string[]> {
-        return [
-            "Post",
-            "Post",
-            "Post",
-        ];
+    async getPost(): Promise<Post[]> {
+        return await Post.find();
     }
 
-    async createPost(params: PostDto): Promise<string> {
+    async createPost(params: PostCreateDto): Promise<Post> {
         try {
             const post: Post = new Post();
             post.content = params.content;
+            post.author = "Stub Author";
             await post.save();
 
-            return;
-        } catch (e) {}
-    }
-
-    async editPost(params: PostDto): Promise<string> {
-        return;
-    }
-
-    async deletePost(params: PostDeleteDto): Promise<ObjectID> {
-        try {
-            const post_id: any = params.post_id;
-            console.log(post_id);
-
-            const repo = getMongoRepository(Post);
-            const post: Post = await repo.findOne({post_id : post_id});
-            console.log(post);
-            if(typeof post === 'undefined') return;
-
-            await Post.delete({post_id});
-            return post_id;
+            return post;
         } catch (e) {
             throw new HttpException(
-                'Error deleting a post.',
+                'Error create a post. ' + e,
+                HttpStatus.INTERNAL_SERVER_ERROR,
+            );
+        }
+    }
+
+    async editPost(params: PostEditDto): Promise<Post> {
+        try {
+            const post_id: string = params.post_id;
+            const post: Post = await Post.findOne(post_id);
+
+            if(!post) {
+                throw new Error("Entity not found.");
+            }
+
+            post.content = params.content;
+            await post.save();
+
+            return post;
+        } catch (e) {
+            throw new HttpException(
+                'Error edit a post. ' + e,
+                HttpStatus.INTERNAL_SERVER_ERROR,
+            );
+        }
+    }
+
+    async deletePost(params: PostDeleteDto): Promise<Post> {
+        try {
+            const post_id: string = params.post_id;
+            const post: Post = await Post.findOne(post_id);
+
+            if(!post) {
+                throw new Error("Entity not found.");
+            }
+
+            await Post.delete(post);
+
+            return post;
+        } catch (e) {
+            throw new HttpException(
+                'Error deleting a post. ' + e,
                 HttpStatus.INTERNAL_SERVER_ERROR,
             );
         }
