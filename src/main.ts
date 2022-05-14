@@ -6,6 +6,7 @@ import {
   OpenAPIObject
 } from '@nestjs/swagger';
 import { AppModule } from './app.module';
+import { ValidationPipe } from './common/pipe/validation.pipe';
 
 async function bootstrap() {
   const app: INestApplication = await NestFactory.create(AppModule);
@@ -17,6 +18,8 @@ async function bootstrap() {
     .build();
   const document: OpenAPIObject = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup("/api/docs", app, document);
+
+  app.useGlobalPipes(new ValidationPipe());
 
   const PORT: string = process.env.PORT;
   await app.listen(PORT);

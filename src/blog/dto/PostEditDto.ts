@@ -10,7 +10,9 @@ export class PostEditDto {
         example: "6278451e7fb8f600252cacbd",
         type: String,
     })
-    @IsMongoId()
+    @IsMongoId({
+        message: "Должен быть идентификатором mongodb."
+    })
     readonly post_id: string;
 
     @ApiProperty({
