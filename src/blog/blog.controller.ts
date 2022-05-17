@@ -6,15 +6,16 @@ import {
     Delete,
     Body,
     UseGuards,
+    Request,
 } from '@nestjs/common';
-import { BlogService } from './blog.service';
-import { PostCreateDto } from './dto/PostCreateDto';
-import { PostDeleteDto } from './dto/PostDeleteDto';
 import {
     ApiBearerAuth,
     ApiOperation,
     ApiTags
 } from '@nestjs/swagger';
+import { BlogService } from './blog.service';
+import { PostCreateDto } from './dto/PostCreateDto';
+import { PostDeleteDto } from './dto/PostDeleteDto';
 import { Post as BlogPost } from './entities/Post';
 import { PostEditDto } from './dto/PostEditDto';
 import { JwtAuthGuard } from './../auth/guard/auth.guard';
@@ -39,9 +40,13 @@ export class BlogController {
     @UseGuards(JwtAuthGuard)
     @ApiBearerAuth()
     @Post("post/create")
-    async createPost(@Body() params: PostCreateDto): Promise<BlogPost> 
+    async createPost(
+        @Body() params: PostCreateDto,
+        @Request() request: any
+    ): Promise<BlogPost> 
     {
-        return await this.blogService.createPost(params);
+        const user = request.user;
+        return await this.blogService.createPost(user, params);
     }
 
     @ApiOperation({

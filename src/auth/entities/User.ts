@@ -9,7 +9,7 @@ import {
 @Entity("user")
 export class User extends BaseEntity {
     @ObjectIdColumn()
-    user_id: ObjectID;
+    id: ObjectID;
 
     @Column()
     username: string;

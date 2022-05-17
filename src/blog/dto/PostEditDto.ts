@@ -13,7 +13,7 @@ export class PostEditDto {
     @IsMongoId({
         message: "Должен быть идентификатором mongodb."
     })
-    readonly post_id: string;
+    readonly id: string;
 
     @ApiProperty({
         example: "The text of your post.",

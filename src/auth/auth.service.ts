@@ -64,7 +64,7 @@ export class AuthService {
 
     private generateToken(user: User): object {
         const payload: object = {
-            id: user.user_id,
+            id: user.id,
             username: user.username,
         };
 

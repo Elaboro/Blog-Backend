@@ -1,4 +1,4 @@
-import { 
+import {
     Entity,
     BaseEntity, 
     CreateDateColumn,
@@ -6,17 +6,18 @@ import {
     ObjectIdColumn,
     ObjectID,
 } from "typeorm";
+import { User } from "./../../auth/entities/User";
 
 @Entity("post")
 export class Post extends BaseEntity {
     @ObjectIdColumn()
-    post_id: ObjectID;
+    id: ObjectID;
 
     @Column({ default: ""})
     content: string;
 
-    @Column({ default: ""})
-    author: string;
+    @Column(type => User)
+    author: User;
 
     @CreateDateColumn()
     created: Date;

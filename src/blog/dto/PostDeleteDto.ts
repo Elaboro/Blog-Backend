@@ -11,5 +11,5 @@ export class PostDeleteDto {
     @IsMongoId({
         message: "Должен быть идентификатором mongodb."
     })
-    readonly post_id: string;
+    readonly id: string;
 }
