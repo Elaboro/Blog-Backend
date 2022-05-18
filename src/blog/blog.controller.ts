@@ -55,9 +55,13 @@ export class BlogController {
     @UseGuards(JwtAuthGuard)
     @ApiBearerAuth()
     @Put("post/edit")
-    async editPost(@Body() params: PostEditDto): Promise<BlogPost> 
+    async editPost(
+        @Body() params: PostEditDto,
+        @Request() request: any
+    ): Promise<BlogPost> 
     {
-        return await this.blogService.editPost(params);
+        const user = request.user;
+        return await this.blogService.editPost(params, user);
     }
 
     @ApiOperation({
@@ -67,8 +71,12 @@ export class BlogController {
     @UseGuards(JwtAuthGuard)
     @ApiBearerAuth()
     @Delete("post/delete")
-    async deletePost(@Body() params: PostDeleteDto): Promise<BlogPost> 
+    async deletePost(
+        @Body() params: PostDeleteDto,
+        @Request() request: any
+    ): Promise<BlogPost> 
     {
-        return await this.blogService.deletePost(params);
+        const user = request.user;
+        return await this.blogService.deletePost(params, user);
     }
 }

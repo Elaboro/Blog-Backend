@@ -1,6 +1,7 @@
 import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { MongoRepository } from 'typeorm';
+import { ObjectId as MongoObjectId } from "mongodb";
 import { PostCreateDto } from './dto/PostCreateDto';
 import { Post } from './entities/Post';
 import { PostDeleteDto } from './dto/PostDeleteDto';
@@ -19,8 +20,8 @@ export class BlogService {
             {
                 $lookup: {
                     from: "user",
-                    localField: "post.author",
-                    foreignField: "id",
+                    localField: "author",
+                    foreignField: "_id",
                     as: "author",
                     pipeline: [
                         { $addFields: { user_id: "$_id" } },
@@ -36,13 +37,9 @@ export class BlogService {
 
     async createPost(user_data: User, params: PostCreateDto): Promise<Post> {
         try {
-            const user: User = await User.findOne(user_data.id, {
-                select: ["id"]
-            });
-
             const post: Post = new Post();
             post.content = params.content;
-            post.author = user;
+            post.author = MongoObjectId(user_data.id);
             await post.save();
 
             return post;
@@ -54,17 +51,23 @@ export class BlogService {
         }
     }
 
-    async editPost(params: PostEditDto): Promise<Post> {
+    async editPost(params: PostEditDto, user: User): Promise<Post> {
         try {
-            const id: string = params.id;
-            const post: Post = await Post.findOne(id);
+            const post_id: string = params.id;
+            const post: Post = await this.postRepo.findOne(post_id);
 
             if(!post) {
                 throw new Error("Entity not found.");
             }
 
-            post.content = params.content;
-            await post.save();
+            if(!this.checkAuthorOfPost(user, post)) {
+                throw new HttpException("User is not author of post.", HttpStatus.BAD_REQUEST);
+            }
+
+            await this.postRepo.updateOne(
+                { _id : post.id },
+                { $set: { content: params.content } }
+            );
 
             return post;
         } catch (e) {
@@ -75,13 +78,17 @@ export class BlogService {
         }
     }
 
-    async deletePost(params: PostDeleteDto): Promise<Post> {
+    async deletePost(params: PostDeleteDto, user: User): Promise<Post> {
         try {
             const id: string = params.id;
             const post: Post = await Post.findOne(id);
 
             if(!post) {
                 throw new Error("Entity not found.");
+            }
+
+            if(!this.checkAuthorOfPost(user, post)) {
+                throw new HttpException("User is not author of post.", HttpStatus.BAD_REQUEST);
             }
 
             await Post.delete(post);
@@ -93,5 +100,9 @@ export class BlogService {
                 HttpStatus.INTERNAL_SERVER_ERROR,
             );
         }
+    }
+
+    private checkAuthorOfPost(author: User, post: Post): boolean {
+        return author.id.toString() === post.author.toString()? true : false; 
     }
 }

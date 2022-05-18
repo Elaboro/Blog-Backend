@@ -6,7 +6,7 @@ import {
     ObjectIdColumn,
     ObjectID,
 } from "typeorm";
-import { User } from "./../../auth/entities/User";
+import { ObjectId as MongoObjectId } from "mongodb"; 
 
 @Entity("post")
 export class Post extends BaseEntity {
@@ -16,8 +16,8 @@ export class Post extends BaseEntity {
     @Column({ default: ""})
     content: string;
 
-    @Column(type => User)
-    author: User;
+    @Column()
+    author: MongoObjectId;
 
     @CreateDateColumn()
     created: Date;

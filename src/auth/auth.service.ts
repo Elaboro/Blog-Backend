@@ -14,7 +14,18 @@ export class AuthService {
 
     async register(params: UserDto): Promise<object> {
         try {
-            const password_hash: string = await bcrypt.hash(params.password, 8);
+            const username: string = params.username;
+            const password: string = params.password;
+
+            const isUserCreated: User = await User.findOne({
+                where: { username: username }
+            });
+
+            if(isUserCreated) {
+                throw new HttpException("Username is already in use.", HttpStatus.CONFLICT);
+            }
+
+            const password_hash: string = await bcrypt.hash(password, 8);
 
             const user: User = new User();
             user.username = params.username;
