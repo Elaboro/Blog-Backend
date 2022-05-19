@@ -14,10 +14,10 @@ import {
     ApiTags
 } from '@nestjs/swagger';
 import { BlogService } from './blog.service';
-import { PostCreateDto } from './dto/PostCreateDto';
-import { PostDeleteDto } from './dto/PostDeleteDto';
-import { Post as BlogPost } from './entities/Post';
-import { PostEditDto } from './dto/PostEditDto';
+import { NoteCreateDto } from './dto/NoteCreateDto';
+import { NoteDeleteDto } from './dto/NoteDeleteDto';
+import { Note } from './entities/Note';
+import { NoteEditDto } from './dto/NoteEditDto';
 import { JwtAuthGuard } from './../auth/guard/auth.guard';
 
 @ApiTags("Blog")
@@ -25,58 +25,58 @@ import { JwtAuthGuard } from './../auth/guard/auth.guard';
 export class BlogController {
     constructor(private blogService: BlogService) {}
     @ApiOperation({
-        summary: "Get all posts.",
-        description: "Get all the data of all posts.",
+        summary: "Get all notes.",
+        description: "Get all the data of all notes.",
     })
-    @Get("post")
-    async post(): Promise<BlogPost[]>
+    @Get("note")
+    async note(): Promise<Note[]>
     {
-        return await this.blogService.getPost();
+        return await this.blogService.getNote();
     }
 
     @ApiOperation({
-        summary: "Create a post."
+        summary: "Create a note."
     })
     @UseGuards(JwtAuthGuard)
     @ApiBearerAuth()
-    @Post("post/create")
-    async createPost(
-        @Body() params: PostCreateDto,
+    @Post("note/create")
+    async createNote(
+        @Body() params: NoteCreateDto,
         @Request() request: any
-    ): Promise<BlogPost> 
+    ): Promise<Note> 
     {
         const user = request.user;
-        return await this.blogService.createPost(user, params);
+        return await this.blogService.createNote(user, params);
     }
 
     @ApiOperation({
-        summary: "Edit a post."
+        summary: "Edit a note."
     })
     @UseGuards(JwtAuthGuard)
     @ApiBearerAuth()
-    @Put("post/edit")
-    async editPost(
-        @Body() params: PostEditDto,
+    @Put("note/edit")
+    async editNote(
+        @Body() params: NoteEditDto,
         @Request() request: any
-    ): Promise<BlogPost> 
+    ): Promise<Note> 
     {
         const user = request.user;
-        return await this.blogService.editPost(params, user);
+        return await this.blogService.editNote(params, user);
     }
 
     @ApiOperation({
-        summary: "Delete a post.",
-        description: "You must specify the id of the post being deleted.",
+        summary: "Delete a note.",
+        description: "You must specify the id of the note being deleted.",
     })
     @UseGuards(JwtAuthGuard)
     @ApiBearerAuth()
-    @Delete("post/delete")
-    async deletePost(
-        @Body() params: PostDeleteDto,
+    @Delete("note/delete")
+    async deleteNote(
+        @Body() params: NoteDeleteDto,
         @Request() request: any
-    ): Promise<BlogPost> 
+    ): Promise<Note> 
     {
         const user = request.user;
-        return await this.blogService.deletePost(params, user);
+        return await this.blogService.deleteNote(params, user);
     }
 }

@@ -5,7 +5,7 @@ import {
     Length,
 } from "class-validator";
 
-export class PostEditDto {
+export class NoteEditDto {
     @ApiProperty({
         example: "6278451e7fb8f600252cacbd",
         type: String,
@@ -16,7 +16,7 @@ export class PostEditDto {
     readonly id: string;
 
     @ApiProperty({
-        example: "The text of your post.",
+        example: "The text of your note.",
         type: String,
     })
     @IsString({

@@ -2,21 +2,21 @@ import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { MongoRepository } from 'typeorm';
 import { ObjectId as MongoObjectId } from "mongodb";
-import { PostCreateDto } from './dto/PostCreateDto';
-import { Post } from './entities/Post';
-import { PostDeleteDto } from './dto/PostDeleteDto';
-import { PostEditDto } from './dto/PostEditDto';
+import { NoteCreateDto } from './dto/NoteCreateDto';
+import { Note } from './entities/Note';
+import { NoteDeleteDto } from './dto/NoteDeleteDto';
+import { NoteEditDto } from './dto/NoteEditDto';
 import { User } from './../auth/entities/User';
 
 @Injectable()
 export class BlogService {
 
     constructor(
-        @InjectRepository(Post) private readonly postRepo: MongoRepository<Post>,
+        @InjectRepository(Note) private readonly noteRepo: MongoRepository<Note>,
     ) {}
 
-    async getPost(): Promise<Post[]> {
-        return await this.postRepo.aggregate([
+    async getNote(): Promise<Note[]> {
+        return await this.noteRepo.aggregate([
             {
                 $lookup: {
                     from: "user",
@@ -30,79 +30,79 @@ export class BlogService {
                 }
             },
             { $unwind: "$author" },
-            { $addFields: { post_id: "$_id" } },
+            { $addFields: { note_id: "$_id" } },
             { $unset: ["_id"] },
         ]).toArray();
     }
 
-    async createPost(user_data: User, params: PostCreateDto): Promise<Post> {
+    async createNote(user_data: User, params: NoteCreateDto): Promise<Note> {
         try {
-            const post: Post = new Post();
-            post.content = params.content;
-            post.author = MongoObjectId(user_data.id);
-            await post.save();
+            const note: Note = new Note();
+            note.content = params.content;
+            note.author = MongoObjectId(user_data.id);
+            await note.save();
 
-            return post;
+            return note;
         } catch (e) {
             throw new HttpException(
-                'Error create a post. ' + e,
+                'Error create a note. ' + e,
                 HttpStatus.INTERNAL_SERVER_ERROR,
             );
         }
     }
 
-    async editPost(params: PostEditDto, user: User): Promise<Post> {
+    async editNote(params: NoteEditDto, user: User): Promise<Note> {
         try {
-            const post_id: string = params.id;
-            const post: Post = await this.postRepo.findOne(post_id);
+            const note_id: string = params.id;
+            const note: Note = await this.noteRepo.findOne(note_id);
 
-            if(!post) {
+            if(!note) {
                 throw new Error("Entity not found.");
             }
 
-            if(!this.checkAuthorOfPost(user, post)) {
-                throw new HttpException("User is not author of post.", HttpStatus.BAD_REQUEST);
+            if(!this.checkAuthorOfNote(user, note)) {
+                throw new HttpException("User is not author of note.", HttpStatus.BAD_REQUEST);
             }
 
-            await this.postRepo.updateOne(
-                { _id : post.id },
+            await this.noteRepo.updateOne(
+                { _id : note.id },
                 { $set: { content: params.content } }
             );
 
-            return post;
+            return note;
         } catch (e) {
             throw new HttpException(
-                'Error edit a post. ' + e,
+                'Error edit a note. ' + e,
                 HttpStatus.INTERNAL_SERVER_ERROR,
             );
         }
     }
 
-    async deletePost(params: PostDeleteDto, user: User): Promise<Post> {
+    async deleteNote(params: NoteDeleteDto, user: User): Promise<Note> {
         try {
             const id: string = params.id;
-            const post: Post = await Post.findOne(id);
+            const note: Note = await Note.findOne(id);
 
-            if(!post) {
+            if(!note) {
                 throw new Error("Entity not found.");
             }
 
-            if(!this.checkAuthorOfPost(user, post)) {
-                throw new HttpException("User is not author of post.", HttpStatus.BAD_REQUEST);
+            if(!this.checkAuthorOfNote(user, note)) {
+                throw new HttpException("User is not author of note.", HttpStatus.BAD_REQUEST);
             }
 
-            await Post.delete(post);
+            await Note.delete(note);
 
-            return post;
+            return note;
         } catch (e) {
             throw new HttpException(
-                'Error deleting a post. ' + e,
+                'Error deleting a note. ' + e,
                 HttpStatus.INTERNAL_SERVER_ERROR,
             );
         }
     }
 
-    private checkAuthorOfPost(author: User, post: Post): boolean {
-        return author.id.toString() === post.author.toString()? true : false; 
+    private checkAuthorOfNote(author: User, note: Note): boolean {
+        return author.id.toString() === note.author.toString()? true : false; 
     }
 }

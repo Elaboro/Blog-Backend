@@ -3,7 +3,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule } from '@nestjs/config';
 import { BlogModule } from './blog/blog.module';
 import { AuthModule } from './auth/auth.module';
-import { Post } from './blog/entities/Post';
+import { Note } from './blog/entities/Note';
 import { User } from './auth/entities/User';
 
 @Module({
@@ -16,7 +16,7 @@ import { User } from './auth/entities/User';
       useNewUrlParser: true,
       useUnifiedTopology: true,
       entities: [
-        Post, 
+        Note, 
         User,
       ],
       synchronize: true,

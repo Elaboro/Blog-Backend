@@ -8,8 +8,8 @@ import {
 } from "typeorm";
 import { ObjectId as MongoObjectId } from "mongodb"; 
 
-@Entity("post")
-export class Post extends BaseEntity {
+@Entity("note")
+export class Note extends BaseEntity {
     @ObjectIdColumn()
     id: ObjectID;
 

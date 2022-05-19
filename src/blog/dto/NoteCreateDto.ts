@@ -4,9 +4,9 @@ import {
     Length,
 } from "class-validator";
 
-export class PostCreateDto {
+export class NoteCreateDto {
     @ApiProperty({
-        example: "The text of your post.",
+        example: "The text of your note.",
         type: String,
     })
     @IsString({

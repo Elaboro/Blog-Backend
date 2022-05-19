@@ -3,7 +3,7 @@ import {
     IsMongoId
 } from "class-validator";
 
-export class PostDeleteDto {
+export class NoteDeleteDto {
     @ApiProperty({
         example: "6278451e7fb8f600252cacbd",
         type: String,
