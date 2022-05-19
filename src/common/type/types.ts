@@ -20,3 +20,7 @@ export interface INoteDelete {
     user: IUser
     note_id: string;
 }
+
+export interface IJwtToken {
+    token: string;
+}

@@ -8,6 +8,7 @@ import {
 } from '@nestjs/common';
 import { Observable } from 'rxjs';
 import { JwtService } from '@nestjs/jwt';
+import { IUser } from './../../common/type/types';
 
 @Injectable()
 export class JwtAuthGuard implements CanActivate {
@@ -30,7 +31,7 @@ export class JwtAuthGuard implements CanActivate {
                 );
             }
 
-            const user: object = this.jwtService.verify(token);
+            const user: IUser = this.jwtService.verify(token);
             req.user = user;
 
             return true;

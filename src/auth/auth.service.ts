@@ -7,12 +7,16 @@ import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcryptjs';
 import { User } from './entities/User';
 import { UserDto } from './dto/UserDto';
+import {
+    IUser,
+    IJwtToken
+} from './../common/type/types';
 
 @Injectable()
 export class AuthService {
     constructor(private jwtService: JwtService) {}
 
-    async register(params: UserDto): Promise<object> {
+    async register(params: UserDto): Promise<IJwtToken> {
         try {
             const username: string = params.username;
             const password: string = params.password;
@@ -38,7 +42,7 @@ export class AuthService {
         }
     }
 
-    async login(params: UserDto): Promise<object> {
+    async login(params: UserDto): Promise<IJwtToken> {
         try {
             const username: string = params.username;
             const password: string = params.password;
@@ -73,8 +77,8 @@ export class AuthService {
         }
     }
 
-    private generateToken(user: User): object {
-        const payload: object = {
+    private generateToken(user: User): IJwtToken {
+        const payload: IUser = {
             id: user.id,
             username: user.username,
         };
