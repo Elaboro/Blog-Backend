@@ -13,7 +13,7 @@ export class NoteEditDto {
     @IsMongoId({
         message: "Должен быть идентификатором mongodb."
     })
-    readonly id: string;
+    readonly note_id: string;
 
     @ApiProperty({
         example: "The text of your note.",

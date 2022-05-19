@@ -11,5 +11,5 @@ export class NoteDeleteDto {
     @IsMongoId({
         message: "Должен быть идентификатором mongodb."
     })
-    readonly id: string;
+    readonly note_id: string;
 }

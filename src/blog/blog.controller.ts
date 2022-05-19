@@ -6,7 +6,6 @@ import {
     Delete,
     Body,
     UseGuards,
-    Request,
 } from '@nestjs/common';
 import {
     ApiBearerAuth,
@@ -19,6 +18,8 @@ import { NoteDeleteDto } from './dto/NoteDeleteDto';
 import { Note } from './entities/Note';
 import { NoteEditDto } from './dto/NoteEditDto';
 import { JwtAuthGuard } from './../auth/guard/auth.guard';
+import { User } from './../common/decorator/UserDecorator';
+import { IUser } from './../common/type/types';
 
 @ApiTags("Blog")
 @Controller('blog')
@@ -42,11 +43,13 @@ export class BlogController {
     @Post("note/create")
     async createNote(
         @Body() params: NoteCreateDto,
-        @Request() request: any
+        @User() user: IUser,
     ): Promise<Note> 
     {
-        const user = request.user;
-        return await this.blogService.createNote(user, params);
+        return await this.blogService.createNote({
+            user: user,
+            ...params,
+        });
     }
 
     @ApiOperation({
@@ -57,11 +60,13 @@ export class BlogController {
     @Put("note/edit")
     async editNote(
         @Body() params: NoteEditDto,
-        @Request() request: any
+        @User() user: IUser,
     ): Promise<Note> 
     {
-        const user = request.user;
-        return await this.blogService.editNote(params, user);
+        return await this.blogService.editNote({
+            user: user,
+            ...params,
+        });
     }
 
     @ApiOperation({
@@ -73,10 +78,12 @@ export class BlogController {
     @Delete("note/delete")
     async deleteNote(
         @Body() params: NoteDeleteDto,
-        @Request() request: any
+        @User() user: IUser,
     ): Promise<Note> 
     {
-        const user = request.user;
-        return await this.blogService.deleteNote(params, user);
+        return await this.blogService.deleteNote({
+            user: user,
+            ...params,
+        });
     }
 }

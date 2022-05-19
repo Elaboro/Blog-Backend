@@ -1,12 +1,13 @@
 import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { MongoRepository } from 'typeorm';
+import { MongoRepository, ObjectID } from 'typeorm';
 import { ObjectId as MongoObjectId } from "mongodb";
-import { NoteCreateDto } from './dto/NoteCreateDto';
 import { Note } from './entities/Note';
-import { NoteDeleteDto } from './dto/NoteDeleteDto';
-import { NoteEditDto } from './dto/NoteEditDto';
-import { User } from './../auth/entities/User';
+import {
+    INoteCreate,
+    INoteDelete,
+    INoteEdit
+} from './../common/type/types';
 
 @Injectable()
 export class BlogService {
@@ -35,11 +36,11 @@ export class BlogService {
         ]).toArray();
     }
 
-    async createNote(user_data: User, params: NoteCreateDto): Promise<Note> {
+    async createNote(params: INoteCreate): Promise<Note> {
         try {
             const note: Note = new Note();
             note.content = params.content;
-            note.author = MongoObjectId(user_data.id);
+            note.author = MongoObjectId(params.user.id);
             await note.save();
 
             return note;
@@ -51,16 +52,16 @@ export class BlogService {
         }
     }
 
-    async editNote(params: NoteEditDto, user: User): Promise<Note> {
+    async editNote(params: INoteEdit): Promise<Note> {
         try {
-            const note_id: string = params.id;
+            const note_id: string = params.note_id;
             const note: Note = await this.noteRepo.findOne(note_id);
 
             if(!note) {
                 throw new Error("Entity not found.");
             }
 
-            if(!this.checkAuthorOfNote(user, note)) {
+            if(!this.checkAuthorOfNote(params.user.id, note)) {
                 throw new HttpException("User is not author of note.", HttpStatus.BAD_REQUEST);
             }
 
@@ -78,16 +79,16 @@ export class BlogService {
         }
     }
 
-    async deleteNote(params: NoteDeleteDto, user: User): Promise<Note> {
+    async deleteNote(params: INoteDelete): Promise<Note> {
         try {
-            const id: string = params.id;
+            const id: string = params.note_id;
             const note: Note = await Note.findOne(id);
 
             if(!note) {
                 throw new Error("Entity not found.");
             }
 
-            if(!this.checkAuthorOfNote(user, note)) {
+            if(!this.checkAuthorOfNote(params.user.id, note)) {
                 throw new HttpException("User is not author of note.", HttpStatus.BAD_REQUEST);
             }
 
@@ -102,7 +103,7 @@ export class BlogService {
         }
     }
 
-    private checkAuthorOfNote(author: User, note: Note): boolean {
-        return author.id.toString() === note.author.toString()? true : false; 
+    private checkAuthorOfNote(author_id: ObjectID, note: Note): boolean {
+        return author_id.toString() === note.author.toString()? true : false; 
     }
 }
