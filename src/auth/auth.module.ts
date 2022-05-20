@@ -1,5 +1,7 @@
 import { Module } from '@nestjs/common';
 import { JwtModule } from '@nestjs/jwt';
+import * as dotenv from 'dotenv';
+dotenv.config();
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
 
@@ -10,7 +12,7 @@ import { AuthService } from './auth.service';
     JwtModule.register({
       secret: `${process.env.JWT_SECRET_KEY}`,
       signOptions: {
-        expiresIn: '24h',
+        expiresIn: `${process.env.JWT_EXPIRES_IN}`,
       }
     }),
   ],
