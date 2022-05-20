@@ -2,14 +2,16 @@ import { ApiProperty } from "@nestjs/swagger";
 import {
     IsMongoId
 } from "class-validator";
+import { apiExample } from "./../../common/api.example";
+import { message } from "./../../common/messages";
 
 export class NoteDeleteDto {
     @ApiProperty({
-        example: "6278451e7fb8f600252cacbd",
+        example: apiExample.note.note_id,
         type: String,
     })
     @IsMongoId({
-        message: "Должен быть идентификатором mongodb."
+        message: message.is_mongo_id,
     })
     readonly note_id: string;
 }

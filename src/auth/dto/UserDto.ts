@@ -3,29 +3,31 @@ import {
     Length
 } from "class-validator";
 import { ApiProperty } from "@nestjs/swagger";
+import { message } from "./../../common/messages";
+import { apiExample } from "./../../common/api.example";
 
 export class UserDto {
     @ApiProperty({
-        example: "user",
+        example: apiExample.user.username,
         type: String,
     })
     @IsString({
-        message: "Должен быть строкой"
+        message: message.is_string
     })
     @Length(4, 20, {
-        message: "Не меньше 4 и не больше 20"
+        message: message.user.username_length,
     })
     readonly username: string;
 
     @ApiProperty({
-        example: "user",
+        example: apiExample.user.password,
         type: String,
     })
     @IsString({
-        message: "Должен быть строкой"
+        message: message.is_string
     })
     @Length(4, 16, {
-        message: "Не меньше 4 и не больше 16"
+        message: message.user.password_length,
     })
     readonly password: string;
 }

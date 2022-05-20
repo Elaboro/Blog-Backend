@@ -3,17 +3,19 @@ import {
     IsString,
     Length,
 } from "class-validator";
+import { apiExample } from "./../../common/api.example";
+import { message } from "./../../common/messages";
 
 export class NoteCreateDto {
     @ApiProperty({
-        example: "The text of your note.",
+        example: apiExample.note.content,
         type: String,
     })
     @IsString({
-        message: "Должен быть строкой."
+        message: message.is_string
     })
     @Length(5, 300, {
-        message: "Не меньше 5 и не больше 300 символов."
+        message: message.note.content.length
     })
     readonly content: string;
 }

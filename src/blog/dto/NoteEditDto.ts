@@ -4,26 +4,28 @@ import {
     IsString,
     Length,
 } from "class-validator";
+import { apiExample } from "./../../common/api.example";
+import { message } from "./../../common/messages";
 
 export class NoteEditDto {
     @ApiProperty({
-        example: "6278451e7fb8f600252cacbd",
+        example: apiExample.note.note_id,
         type: String,
     })
     @IsMongoId({
-        message: "Должен быть идентификатором mongodb."
+        message: message.is_mongo_id,
     })
     readonly note_id: string;
 
     @ApiProperty({
-        example: "The text of your note.",
+        example: apiExample.note.content,
         type: String,
     })
     @IsString({
-        message: "Должен быть строкой."
+        message: message.is_string,
     })
     @Length(5, 300, {
-        message: "Не меньше 5 и не больше 300 символов."
+        message: message.note.content.length
     })
     readonly content: string;
 }
