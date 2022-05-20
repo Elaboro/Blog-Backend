@@ -1,7 +1,6 @@
 import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { MongoRepository, ObjectID } from 'typeorm';
-import { ObjectId as MongoObjectId } from "mongodb";
 import { Note } from './entities/Note';
 import {
     INoteCreate,
@@ -40,7 +39,7 @@ export class BlogService {
         try {
             const note: Note = new Note();
             note.content = params.content;
-            note.author = MongoObjectId(params.user.id);
+            note.author = params.user.id;
             await note.save();
 
             return note;
@@ -69,6 +68,7 @@ export class BlogService {
                 { _id : note.id },
                 { $set: { content: params.content } }
             );
+            await note.reload();
 
             return note;
         } catch (e) {

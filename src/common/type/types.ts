@@ -1,7 +1,7 @@
-import { ObjectID } from "typeorm";
+import { ObjectId as MongoObjectId } from "mongodb";
 
 export interface IUser {
-    id: ObjectID;
+    id: MongoObjectId;
     username: string;
 }
 

@@ -1,9 +1,15 @@
 import { createParamDecorator, ExecutionContext } from "@nestjs/common";
+import { IUser } from "../type/types";
+import { ObjectId as MongoObjectId } from 'mongodb';
 
 export const User = createParamDecorator(
     (data: string, ctx: ExecutionContext) => {
-        const request = ctx.switchToHttp().getRequest();
-        const user = request.user;
+        const request: Request & {
+            user: IUser
+        } = ctx.switchToHttp().getRequest();
+
+        const user: IUser = request.user;
+        user.id = new MongoObjectId(user.id);
 
         return user;
     },

@@ -20,6 +20,7 @@ import { NoteEditDto } from './dto/NoteEditDto';
 import { JwtAuthGuard } from './../auth/guard/auth.guard';
 import { User } from './../common/decorator/UserDecorator';
 import { IUser } from './../common/type/types';
+import { notePresenter } from './presenter/notePresenter';
 
 @ApiTags("Blog")
 @Controller('blog')
@@ -44,12 +45,13 @@ export class BlogController {
     async createNote(
         @Body() params: NoteCreateDto,
         @User() user: IUser,
-    ): Promise<Note> 
+    ): Promise<any> 
     {
-        return await this.blogService.createNote({
+        const note: Note = await this.blogService.createNote({
             user: user,
             ...params,
         });
+        return notePresenter(note, user);
     }
 
     @ApiOperation({
@@ -61,12 +63,13 @@ export class BlogController {
     async editNote(
         @Body() params: NoteEditDto,
         @User() user: IUser,
-    ): Promise<Note> 
+    ): Promise<any> 
     {
-        return await this.blogService.editNote({
+        const note: Note =  await this.blogService.editNote({
             user: user,
             ...params,
         });
+        return notePresenter(note, user);
     }
 
     @ApiOperation({
@@ -79,11 +82,12 @@ export class BlogController {
     async deleteNote(
         @Body() params: NoteDeleteDto,
         @User() user: IUser,
-    ): Promise<Note> 
+    ): Promise<any> 
     {
-        return await this.blogService.deleteNote({
+        const note: Note = await this.blogService.deleteNote({
             user: user,
             ...params,
         });
+        return notePresenter(note, user);
     }
 }
