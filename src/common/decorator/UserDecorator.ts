@@ -9,7 +9,7 @@ export const User = createParamDecorator(
         } = ctx.switchToHttp().getRequest();
 
         const user: IUser = request.user;
-        user.id = new MongoObjectId(user.id);
+        user.user_id = new MongoObjectId(user.user_id);
 
         return user;
     },

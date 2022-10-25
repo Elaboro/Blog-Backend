@@ -39,7 +39,7 @@ export class BlogService {
         try {
             const note: Note = new Note();
             note.content = params.content;
-            note.author = params.user.id;
+            note.author = params.user.user_id;
             await note.save();
 
             return note;
@@ -60,7 +60,7 @@ export class BlogService {
                 throw new Error("Entity not found.");
             }
 
-            if(!this.checkAuthorOfNote(params.user.id, note)) {
+            if(!this.checkAuthorOfNote(params.user.user_id, note)) {
                 throw new HttpException("User is not author of note.", HttpStatus.BAD_REQUEST);
             }
 
@@ -88,7 +88,7 @@ export class BlogService {
                 throw new Error("Entity not found.");
             }
 
-            if(!this.checkAuthorOfNote(params.user.id, note)) {
+            if(!this.checkAuthorOfNote(params.user.user_id, note)) {
                 throw new HttpException("User is not author of note.", HttpStatus.BAD_REQUEST);
             }
 

@@ -1,7 +1,7 @@
 import { ObjectId as MongoObjectId } from "mongodb";
 
 export interface IUser {
-    id: MongoObjectId;
+    user_id: MongoObjectId;
     username: string;
 }
 

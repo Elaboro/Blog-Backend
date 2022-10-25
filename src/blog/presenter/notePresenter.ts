@@ -7,7 +7,7 @@ export const notePresenter = (note: Note, user: IUser) => {
         content: note.content,
         created: note.created,
         author: {
-            user_id: user.id,
+            user_id: user.user_id,
             username: user.username,
         }
     };

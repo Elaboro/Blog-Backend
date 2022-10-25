@@ -79,7 +79,7 @@ export class AuthService {
 
     private generateToken(user: User): IJwtToken {
         const payload: IUser = {
-            id: user.id,
+            user_id: user.id,
             username: user.username,
         };
 
